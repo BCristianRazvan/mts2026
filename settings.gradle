@@ -1,0 +1,27 @@
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+plugins {
+    // Apply the foojay-resolver plugin to allow automatic download of JDKs
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+
+    // ADD THESE LINES TO DEFINE THE VERSIONS
+    id 'com.android.application' version '8.9.1' apply false
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.name = 'MASTER_THE_STACK'
+include ':app'
+

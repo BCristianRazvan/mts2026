@@ -1,0 +1,44 @@
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Local configuration (SDK path, secrets)
+local.properties
+*.env
+.env*
+
+# Signing keys
+*.jks
+*.keystore
+keystore.properties
+
+# Android build artifacts
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
+captures/
+.externalNativeBuild/
+.cxx/
+output-metadata.json
+
+# Logs
+*.log
+
+# IDE: Android Studio / IntelliJ
+.idea/
+*.iml
+.kotlin/
+
+# IDE: VS Code
+.vscode/
+
+# Claude Code: personal / session-specific files
+.claude/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
