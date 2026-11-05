@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- The root is focusable so that the text box can lose focus when the user taps outside it. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:orientation="vertical"
     android:padding="24dp">
 
@@ -16,13 +20,20 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
-        android:layout_weight="1"
+        android:layout_weight="3"
         android:background="@android:drawable/edit_text"
         android:gravity="top|start"
         android:hint="@string/transcript_hint"
         android:inputType="textMultiLine|textCapSentences"
-        android:padding="16dp"
-        android:textSize="18sp" />
+        android:padding="12dp"
+        android:scrollbars="vertical"
+        android:textSize="16sp" />
+
+    <!-- Free space below the text box keeps the status and the button at the bottom. -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2" />
 
     <TextView
         android:id="@+id/status"

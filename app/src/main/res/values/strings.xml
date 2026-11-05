@@ -9,4 +9,6 @@
     <string name="finishing_transcript">Finishing transcript…</string>
     <string name="start_listening">Start listening</string>
     <string name="stop_and_add">Stop and add text</string>
+    <string name="benchmark_running">Benchmark %1$s running…</string>
+    <string name="benchmark_rejected">Benchmark request rejected: debug build and simple names only.</string>
 </resources>

@@ -24,6 +24,11 @@ captures/
 .cxx/
 output-metadata.json
 
+# STT workshop: intermediate clean speech (generate_testset.ps1) and Python caches
+docs/stt-model-replacement/testset/clean/
+docs/stt-model-replacement/ORGANIZER.md
+__pycache__/
+
 # Logs
 *.log
 

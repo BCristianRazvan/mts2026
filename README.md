@@ -4,6 +4,10 @@ An Android app that turns microphone input into a simple chat-style transcript. 
 
 The app requests microphone permission when listening starts, displays partial recognition results, and adds finalized speech to the transcript.
 
+## Workshop guides
+
+The speech-to-text improvement workshop (two student groups: a stronger offline model, and a cloud LLM after local STT) is described in [docs/stt-model-replacement/README.md](docs/stt-model-replacement/README.md).
+
 ## Prerequisites
 
 Before building the application, install:

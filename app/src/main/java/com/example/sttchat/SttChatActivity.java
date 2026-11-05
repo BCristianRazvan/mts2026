@@ -1,8 +1,14 @@
 package com.example.sttchat;
 
 import android.Manifest;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Rect;
 import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -35,7 +41,42 @@ public class SttChatActivity extends AppCompatActivity {
     recognizer = new OfflineSpeechRecognizer(this, new SpeechListener());
     microphoneButton.setOnClickListener(view -> toggleListening());
 
-    speechExecutor.execute(recognizer::prepare);
+    // savedInstanceState != null: the activity was recreated (for example after a rotation).
+    // Do not start the same benchmark again.
+    if (savedInstanceState != null || !startBenchmarkIfRequested()) {
+      speechExecutor.execute(recognizer::prepare);
+    }
+  }
+
+  /**
+   * Starts the on-device benchmark when the activity is launched with the benchmark extras, for
+   * example by {@code tools/device_benchmark.py}. Only debuggable builds accept the request.
+   */
+  private boolean startBenchmarkIfRequested() {
+    String input = getIntent().getStringExtra(SttBenchmark.EXTRA_INPUT);
+    if (input == null) {
+      return false;
+    }
+    String run = getIntent().getStringExtra(SttBenchmark.EXTRA_RUN);
+    if (run == null) {
+      run = input;
+    }
+    int repeat = Math.max(1, Math.min(10, getIntent().getIntExtra(SttBenchmark.EXTRA_REPEAT, 3)));
+    boolean debuggable = (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
+    if (!debuggable || !SttBenchmark.isValidName(input) || !SttBenchmark.isValidName(run)) {
+      // Show the reason in the transcript and start in normal microphone mode.
+      finalizedText += getString(R.string.benchmark_rejected) + "\n";
+      transcript.setText(finalizedText);
+      return false;
+    }
+
+    // A screen that turns off slows down the CPU and changes the timing.
+    getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    status.setText(getString(R.string.benchmark_running, run));
+    SttBenchmark benchmark =
+        new SttBenchmark(this, input, run, repeat, null, new BenchmarkListener());
+    speechExecutor.execute(benchmark::run);
+    return true;
   }
 
   @Override
@@ -79,6 +120,26 @@ public class SttChatActivity extends AppCompatActivity {
     microphoneButton.setEnabled(false);
     status.setText(R.string.starting_microphone);
     speechExecutor.execute(recognizer::start);
+  }
+
+  /** Hides the keyboard when the user touches anywhere outside the focused text box. */
+  @Override
+  public boolean dispatchTouchEvent(MotionEvent event) {
+    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+      View focused = getCurrentFocus();
+      if (focused instanceof EditText) {
+        Rect bounds = new Rect();
+        focused.getGlobalVisibleRect(bounds);
+        if (!bounds.contains((int) event.getRawX(), (int) event.getRawY())) {
+          focused.clearFocus();
+          InputMethodManager keyboard = getSystemService(InputMethodManager.class);
+          if (keyboard != null) {
+            keyboard.hideSoftInputFromWindow(focused.getWindowToken(), 0);
+          }
+        }
+      }
+    }
+    return super.dispatchTouchEvent(event);
   }
 
   private void showTranscript(String partialText) {
@@ -135,6 +196,34 @@ public class SttChatActivity extends AppCompatActivity {
     @Override
     public void onError(String message) {
       runOnUiThread(() -> showError(message));
+    }
+  }
+
+  private final class BenchmarkListener implements SttBenchmark.Listener {
+    @Override
+    public void onProgress(String message) {
+      runOnUiThread(
+          () -> {
+            if (!isDestroyed()) {
+              status.setText(message);
+            }
+          });
+    }
+
+    @Override
+    public void onFinished(String message) {
+      runOnUiThread(
+          () -> {
+            if (isDestroyed() || speechExecutor.isShutdown()) {
+              return;
+            }
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            // Keep the result visible, then switch to normal microphone mode.
+            finalizedText += message + "\n";
+            transcript.setText(finalizedText);
+            status.setText(R.string.loading_model);
+            speechExecutor.execute(recognizer::prepare);
+          });
     }
   }
 }

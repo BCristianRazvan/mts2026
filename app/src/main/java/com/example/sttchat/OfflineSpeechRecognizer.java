@@ -54,33 +54,7 @@ final class OfflineSpeechRecognizer {
     }
 
     try {
-      OnlineRecognizerConfig config = new OnlineRecognizerConfig();
-      config.getFeatConfig().setSampleRate(SAMPLE_RATE);
-      config.getFeatConfig().setFeatureDim(80);
-      config
-          .getEndpointConfig()
-          .getRule1()
-          .setMinTrailingSilence(RULE1_MIN_TRAILING_SILENCE_SECONDS);
-      config
-          .getEndpointConfig()
-          .getRule2()
-          .setMinTrailingSilence(RULE2_MIN_TRAILING_SILENCE_SECONDS);
-      config.getEndpointConfig().getRule3().setMinUtteranceLength(RULE3_MIN_UTTERANCE_SECONDS);
-
-      String modelDirectory = "models/stt/";
-      config.getModelConfig().getTransducer().setEncoder(modelDirectory + "encoder.int8.onnx");
-      config.getModelConfig().getTransducer().setDecoder(modelDirectory + "decoder.int8.onnx");
-      config.getModelConfig().getTransducer().setJoiner(modelDirectory + "joiner.int8.onnx");
-      config.getModelConfig().setTokens(modelDirectory + "tokens.txt");
-      config.getModelConfig().setModelingUnit("bpe");
-      config.getModelConfig().setBpeVocab(modelDirectory + "bpe.vocab");
-      config.setHotwordsFile(modelDirectory + "hotwords.txt");
-      config.setHotwordsScore(1.5f);
-      config.getModelConfig().setNumThreads(4);
-      config.setDecodingMethod("modified_beam_search");
-      config.setMaxActivePaths(4);
-
-      recognizer = new OnlineRecognizer(context.getAssets(), config);
+      recognizer = createRecognizer(context);
       stream = recognizer.createStream("");
       listener.onModelReady();
     } catch (Throwable error) {
@@ -89,6 +63,40 @@ final class OfflineSpeechRecognizer {
       stream = null;
       listener.onError("Offline speech model could not start");
     }
+  }
+
+  /**
+   * Creates the STT recognizer. The microphone mode and {@link SttBenchmark} both use this method,
+   * so a model change here applies to both.
+   */
+  static OnlineRecognizer createRecognizer(Context context) {
+    OnlineRecognizerConfig config = new OnlineRecognizerConfig();
+    config.getFeatConfig().setSampleRate(SAMPLE_RATE);
+    config.getFeatConfig().setFeatureDim(80);
+    config
+        .getEndpointConfig()
+        .getRule1()
+        .setMinTrailingSilence(RULE1_MIN_TRAILING_SILENCE_SECONDS);
+    config
+        .getEndpointConfig()
+        .getRule2()
+        .setMinTrailingSilence(RULE2_MIN_TRAILING_SILENCE_SECONDS);
+    config.getEndpointConfig().getRule3().setMinUtteranceLength(RULE3_MIN_UTTERANCE_SECONDS);
+
+    String modelDirectory = "models/stt/";
+    config.getModelConfig().getTransducer().setEncoder(modelDirectory + "encoder.int8.onnx");
+    config.getModelConfig().getTransducer().setDecoder(modelDirectory + "decoder.int8.onnx");
+    config.getModelConfig().getTransducer().setJoiner(modelDirectory + "joiner.int8.onnx");
+    config.getModelConfig().setTokens(modelDirectory + "tokens.txt");
+    config.getModelConfig().setModelingUnit("bpe");
+    config.getModelConfig().setBpeVocab(modelDirectory + "bpe.vocab");
+    config.setHotwordsFile(modelDirectory + "hotwords.txt");
+    config.setHotwordsScore(1.5f);
+    config.getModelConfig().setNumThreads(4);
+    config.setDecodingMethod("modified_beam_search");
+    config.setMaxActivePaths(4);
+
+    return new OnlineRecognizer(context.getAssets(), config);
   }
 
   void start() {
