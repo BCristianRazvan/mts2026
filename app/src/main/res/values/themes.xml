@@ -1,0 +1,7 @@
+<resources>
+    <style name="Theme.SttChat" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="colorPrimary">#385E72</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+    </style>
+</resources>

@@ -1,35 +1,51 @@
-# Gradle files
+# Gradle
 .gradle/
 build/
-.kotlin/
+!gradle/wrapper/gradle-wrapper.jar
 
-# Local configuration file (sdk path, etc)
-local.properties
+# Local configuration (SDK path, secrets)
+*.env
+.env*
 
-# Log/OS Files
-*.log
+# Signing keys
+*.jks
+*.keystore
+keystore.properties
 
-# Android Studio generated files and folders
+# Android build artifacts
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
 captures/
 .externalNativeBuild/
 .cxx/
-*.aab
-*.apk
 output-metadata.json
 
-# IntelliJ
-*.iml
+# STT workshop: intermediate clean speech (generate_testset.ps1) and Python caches
+docs/stt-model-replacement/testset/clean/
+docs/stt-model-replacement/ORGANIZER.md
+__pycache__/
+
+# Logs
+*.log
+
+# IDE: Android Studio / IntelliJ
 .idea/
-misc.xml
-deploymentTargetDropDown.xml
-render.experimental.xml
+*.iml
+.kotlin/
 
-# Keystore files
-*.jks
-*.keystore
+# IDE: VS Code
+.vscode/
 
-# Google Services (e.g. APIs or Firebase)
-google-services.json
+# Claude Code: personal / session-specific files
+.claude/
 
-# Android Profiling
-*.hprof
+# RUFF
+.ruff_cache
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini

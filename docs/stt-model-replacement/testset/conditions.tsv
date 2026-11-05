@@ -1,0 +1,11 @@
+file	voice	rate	noise	snr_db	bandpass
+test_01.wav	Microsoft Zira Desktop	3	car	12	no
+test_02.wav	Microsoft David Desktop	2	car	12	no
+test_03.wav	Microsoft Zira Desktop	3	car	10	yes
+test_04.wav	Microsoft David Desktop	3	car	10	no
+test_05.wav	Microsoft Zira Desktop	2	car	12	yes
+test_06.wav	Microsoft David Desktop	3	car	10	no
+test_07.wav	Microsoft Zira Desktop	4	car	8	no
+test_08.wav	Microsoft David Desktop	3	car	10	yes
+test_09.wav	Microsoft Zira Desktop	4	car	8	no
+test_10.wav	Microsoft David Desktop	4	car	8	yes
