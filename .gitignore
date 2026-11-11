@@ -1,10 +1,9 @@
-# Gradle
+﻿# Gradle
 .gradle/
 build/
 !gradle/wrapper/gradle-wrapper.jar
 
 # Local configuration (SDK path, secrets)
-local.properties
 *.env
 .env*
 
@@ -45,10 +44,10 @@ __pycache__/
 .codex/
 .agents/
 
+# RUFF
+.ruff_cache/
+
 # OS files
 .DS_Store
 Thumbs.db
 desktop.ini
-
-# RUFF
-.ruff_cache/

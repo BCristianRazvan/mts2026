@@ -9,7 +9,7 @@ Read the [workshop README](README.md) first. It describes the test set, the tool
 
 ## Objective
 
-In this scenario you do not replace or retrain the STT model. The existing model continues to convert speech into text on the phone. A PC script then sends the recognized text to an OpenAI LLM (default: `gpt-6-astra`), which is asked to correct transcription errors without changing the speaker's intended meaning. In this guideline, "the LLM" always means this OpenAI model.
+In this scenario you do not replace or retrain the STT model. The existing model continues to convert speech into text on the phone. A PC script then sends the recognized text to an OpenAI LLM (default: `gpt-5-mini`), which is asked to correct transcription errors without changing the speaker's intended meaning. In this guideline, "the LLM" always means this OpenAI model.
 
 You compare the phone transcript and the LLM transcript against the reference transcript in `transcripts.tsv`. A fluent rewrite is not necessarily a more accurate transcript, so the reference decides, not your opinion of which text sounds better.
 
@@ -72,13 +72,13 @@ The organizer creates a project on the OpenAI Platform, sets a budget for it, cr
 | Setting | Example | Where to find it |
 |---|---|---|
 | API key | (secret, starts with `sk-`) | OpenAI Platform, the project, **API keys** |
-| Model name | `gpt-6-astra` | OpenAI model list. The project must have access to this model. |
+| Model name | `gpt-5-mini` | OpenAI model list. The project must have access to this model. |
 
 Set the values as environment variables in the PowerShell window where you run the script:
 
 ```powershell
 $env:OPENAI_API_KEY = "<key from the organizer>"
-$env:OPENAI_MODEL = "gpt-6-astra"
+$env:OPENAI_MODEL = "gpt-5-mini"
 ```
 
 The OpenAI SDK reads the key from `OPENAI_API_KEY` automatically. The variables exist only in this window. In every new PowerShell window, set them again. Do not use `setx` for the key: `setx` stores it permanently in your Windows user profile. Check the model with `echo $env:OPENAI_MODEL`, but never `echo` the key, so that it does not appear on screen or in a screenshot. Never write the key into a file in the repository.
@@ -111,7 +111,7 @@ text is kept and `status` says why, so the comparison never loses a file.
 Set these environment variables first (never commit them):
 
     OPENAI_API_KEY  project API key from the OpenAI Platform
-    OPENAI_MODEL    model name (default: gpt-6-astra)
+    OPENAI_MODEL    model name (default: gpt-5-mini)
 
 Example (from the repository root):
 
@@ -208,7 +208,7 @@ def main() -> None:
     parser.add_argument("out_tsv", type=Path)
     args = parser.parse_args()
 
-    model = os.environ.get("OPENAI_MODEL", "gpt-6-astra")
+    model = os.environ.get("OPENAI_MODEL", "gpt-5-mini")
     try:
         client = create_client()
     except openai.OpenAIError as error:
@@ -288,7 +288,7 @@ What each part does:
 
 - **`SYSTEM_PROMPT`:** the workshop prompt, sent as the `instructions` parameter. The phone transcript is the only `input`.
 - **`OUTPUT_FORMAT` (structured output):** the LLM must answer with JSON `{"corrected_text": "..."}` (`text.format` with `type` `json_schema` and `strict` `True`). Without it, the LLM may add a sentence such as "Here is the corrected text:", and every added word counts as a WER error.
-- **`reasoning={"effort": "low"}`:** `gpt-6-astra` is a reasoning model. Correcting a short sentence needs little reasoning, and low effort keeps latency and cost down. The script does not send `temperature`. The repeat run in Stage 3 measures how stable the answers are.
+- **`reasoning={"effort": "low"}`:** `gpt-5-mini` supports reasoning. Correcting a short sentence needs little reasoning, and low effort keeps latency and cost down. The script does not send `temperature`. The repeat run in Stage 3 measures how stable the answers are.
 - **`max_output_tokens=2048`:** the reasoning tokens and the answer share this limit. If the limit is reached, the response has the status `incomplete` and the script records `bad answer: answer incomplete (max_output_tokens)`.
 - **`store=False`:** OpenAI does not keep the response for later retrieval.
 - **Refusal:** if the LLM declines a request, the answer contains a `refusal` part instead of the JSON. The script records `bad answer: the LLM declined the request: ...` and keeps the phone text.
@@ -352,7 +352,7 @@ Here, ignore the verdict. Read only the line `Files improved / unchanged / worse
 
 Owner: whole group.
 
-`compare_runs.py` has default prices for a different model. Give the current OpenAI prices of your model with `--price-in` and `--price-out` (USD per 1M tokens). For `gpt-6-astra`, the standard prices are USD 10 per 1M input tokens and USD 50 per 1M output tokens. Check the current prices on the OpenAI pricing page before you run the command.
+`compare_runs.py` has default prices for a different model. Give the current OpenAI prices of your model with `--price-in` and `--price-out` (USD per 1M tokens). For `gpt-5-mini`, the standard prices are USD 0.25 per 1M input tokens and USD 2 per 1M output tokens. Check the current prices on the OpenAI pricing page before you run the command. OpenAI lists this model as scheduled to shut down on December 11, 2026, so use it only for this short workshop run.
 
 ```powershell
 uv run --no-project --python 3.12 --with jiwer `
@@ -360,7 +360,7 @@ uv run --no-project --python 3.12 --with jiwer `
     docs/stt-model-replacement/results/group2/phone.tsv `
     docs/stt-model-replacement/results/group2/openai.tsv `
     --label-a phone --label-b openai `
-    --price-in 10 --price-out 50
+    --price-in 0.25 --price-out 2
 ```
 
 The script prints the comparison in the terminal and writes `results/group2/compare_phone_vs_openai.html`. It shows:
