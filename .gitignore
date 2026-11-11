@@ -40,10 +40,15 @@ __pycache__/
 # IDE: VS Code
 .vscode/
 
-# Claude Code: personal / session-specific files
+# AI
 .claude/
+.codex/
+.agents/
 
 # OS files
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# RUFF
+.ruff_cache/

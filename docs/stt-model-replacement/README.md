@@ -28,11 +28,11 @@ There are 12 students in two groups of 6. Each group has its own guideline.
 | | Group 1 | Group 2 |
 |---|---|---|
 | Guideline | [04 — Upgrade to a more accurate streaming model](04-medium-upgrade-to-more-accurate-streaming-model.md) | [05 — Cloud LLM after local STT](05-easy-medium-cloud-llm-after-local-stt.md) |
-| Question | Does a better offline model give more accurate text than the current model, and is it worth the cost in speed, memory and size? | Does Claude improve the text from the phone without changing its meaning? |
+| Question | Does a better offline model give more accurate text than the current model, and is it worth the cost in speed, memory and size? | Does an OpenAI LLM improve the text from the phone without changing its meaning? |
 | Stage 1 | Test the current app on the phone | Test the current app on the phone |
-| Stage 2 | Replace the offline model with a better one | Add the code that connects to Claude (API key and endpoint) |
-| Stage 3 | Test the new model on the phone | Send the phone transcripts to Claude and save the improved text |
-| Stage 4 | Compare the results and decide which model is better | Compare the phone transcripts with the Claude text |
+| Stage 2 | Replace the offline model with a better one | Add the code that connects to the OpenAI API (API key and model name) |
+| Stage 3 | Test the new model on the phone | Send the phone transcripts to the LLM and save the improved text |
+| Stage 4 | Compare the results and decide which model is better | Compare the phone transcripts with the LLM text |
 
 Both groups produce **measurable results**: every test writes its results to a file, and the comparison script turns two result files into a table in the terminal, an HTML page, and a verdict.
 
@@ -162,7 +162,7 @@ The verdict is a rule based on numbers only. It does not check the meaning of th
 ## Rules for both groups
 
 1. **Record the baseline first.** Test the unmodified app before you change anything. Without a baseline you cannot prove an improvement.
-2. **Do not change the reference data.** Do not edit the files in `testset/`. Do not edit the four shared tools in `tools/`. Adding a new file is allowed (Group 2 adds `tools/claude_correct.py`). If you find a bug in a tool, tell the organizer, who fixes it for both groups.
+2. **Do not change the reference data.** Do not edit the files in `testset/`. Do not edit the four shared tools in `tools/`. Adding a new file is allowed (Group 2 adds `tools/openai_correct.py`). If you find a bug in a tool, tell the organizer, who fixes it for both groups.
 3. **Use the same conditions.** Two runs are comparable only if all of these are true. Copy the list into `REPORT.md` and tick it for every run:
    - [ ] Same phone and same USB cable.
    - [ ] Same `--repeat` value (default 3).
@@ -189,8 +189,8 @@ A session is about 3 hours.
 
 | Session | Group 1 | Group 2 |
 |---|---|---|
-| 1 | Setup, agree on the limits, Stage 1: baseline on the phone, start the candidate search | Setup, agree on the limits, Stage 1: baseline on the phone. Pair B in parallel: Stage 2a and 2d (Claude access test) |
-| 2 | Stage 2: candidate screening, integrate the best candidate | Stage 2: Claude script, Stage 3: first Claude run |
+| 1 | Setup, agree on the limits, Stage 1: baseline on the phone, start the candidate search | Setup, agree on the limits, Stage 1: baseline on the phone. Pair B in parallel: Stage 2a and 2d (OpenAI API access test) |
+| 2 | Stage 2: candidate screening, integrate the best candidate | Stage 2: OpenAI script, Stage 3: first LLM run |
 | 3 | Stage 3: test the new model (at most 2 candidates), Stage 4: compare | Stage 3: repeat run and failure tests, Stage 4: compare and meaning review |
 | 4 | Report and presentation | Report and presentation |
 
@@ -199,7 +199,7 @@ A session is about 3 hours.
 Each group gives a 10-minute presentation:
 
 1. **Question:** what you tried to prove.
-2. **Setup:** phone, models or Claude deployment, settings, limits.
+2. **Setup:** phone, models or OpenAI model, settings, limits.
 3. **Baseline:** results of the current app.
 4. **Change:** what you changed, and why.
 5. **Results:** the comparison table and the HTML page from `compare_runs.py`.
