@@ -1,0 +1,16 @@
+key	value
+run	phone
+input	testset
+files	10
+repeat	3
+chunk_samples	640
+device	HUAWEI POT-LX1
+android	9 (API 28)
+abi	arm64-v8a
+model_load_ms	7665
+total_audio_s	54.13
+total_decode_ms	20859
+rtf	0.385
+pss_before_load_mb	34.5
+pss_after_load_mb	297.7
+pss_peak_mb	297.7
