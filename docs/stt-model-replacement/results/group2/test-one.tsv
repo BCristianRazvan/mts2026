@@ -1,0 +1,2 @@
+file	stt	hypothesis	latency_ms	input_tokens	output_tokens	status
+test_01.wav	TURN ON THE REAR WINDOW THE FROSTER IN THE HEATED STEERING WHEEL	Turn on the rear window defroster and the heated steering wheel.	4440	78	150	ok
